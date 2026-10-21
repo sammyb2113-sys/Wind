@@ -11,10 +11,12 @@
       background: #0d1117;
       color: #e6edf3;
       margin: 0;
-      padding: 10px;
+      padding: 8px;
     }
     .widget-container {
       width: 100%;
+      max-width: 460px;
+      margin: 0 auto;
       background: #161b22;
       border: 1px solid #30363d;
       border-radius: 12px;
@@ -31,131 +33,144 @@
     .header h1 { font-size: 15px; margin: 0; font-weight: 700; color: #58a6ff; }
     .updated { font-size: 11px; color: #8b949e; }
     .port-section { margin-bottom: 10px; }
-    .port-title { font-size: 11px; text-transform: uppercase; color: #3fb950; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 6px; }
+    .port-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #3fb950;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      margin-bottom: 6px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
     .station-card {
       background: #21262d;
       border: 1px solid #30363d;
       border-radius: 8px;
-      padding: 8px 12px;
-      margin-bottom: 6px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      padding: 8px 10px;
     }
-    .station-name { font-size: 13px; font-weight: 600; color: #f0f6fc; }
-    .wind-speed { font-size: 18px; font-weight: 800; color: #f0883e; text-align: right; }
-    .wind-details { font-size: 11px; color: #8b949e; margin-top: 1px; }
-    .right-col { text-align: right; }
+    .station-name { font-size: 12px; font-weight: 600; color: #f0f6fc; margin-bottom: 4px; }
+    .wind-speed { font-size: 19px; font-weight: 800; color: #f0883e; }
+    .wind-details { font-size: 11px; color: #8b949e; margin-top: 2px; }
   </style>
 </head>
 <body>
 
 <div class="widget-container">
   <div class="header">
-    <h1>⚓ NSW Port Winds</h1>
-    <span id="lastUpdated" class="updated">Connecting...</span>
+    <h1>⚓ PANSW Live Winds</h1>
+    <span id="lastUpdated" class="updated">Loading...</span>
   </div>
 
   <div class="port-section">
     <div class="port-title">Sydney Harbour</div>
-    <div class="station-card">
-      <div>
-        <div class="station-name">Sydney Harbour (Fort Denison)</div>
-        <div class="wind-details" id="syd-dir">Dir: --</div>
+    <div class="grid">
+      <div class="station-card">
+        <div class="station-name">W Wedding Cake</div>
+        <div class="wind-speed" id="cake-speed">-- kts</div>
+        <div class="wind-details" id="cake-gust">Gust: --</div>
+        <div class="wind-details" id="cake-dir">Dir: --</div>
       </div>
-      <div class="right-col">
-        <div class="wind-speed" id="syd-speed">-- kts</div>
-        <div class="wind-details" id="syd-gust">Gust: -- kts</div>
-      </div>
-    </div>
-    <div class="station-card">
-      <div>
-        <div class="station-name">Sydney Heads / South Head</div>
-        <div class="wind-details" id="heads-dir">Dir: --</div>
-      </div>
-      <div class="right-col">
-        <div class="wind-speed" id="heads-speed">-- kts</div>
-        <div class="wind-details" id="heads-gust">Gust: -- kts</div>
+      <div class="station-card">
+        <div class="station-name">Fort Denison</div>
+        <div class="wind-speed" id="denison-speed">-- kts</div>
+        <div class="wind-details" id="denison-gust">Gust: --</div>
+        <div class="wind-details" id="denison-dir">Dir: --</div>
       </div>
     </div>
   </div>
 
-  <div class="port-section">
+  <div class="port-section" style="margin-bottom: 0;">
     <div class="port-title">Botany Bay</div>
-    <div class="station-card">
-      <div>
-        <div class="station-name">Botany Bay (Airport / Runway)</div>
-        <div class="wind-details" id="bot-dir">Dir: --</div>
+    <div class="grid">
+      <div class="station-card">
+        <div class="station-name">Ampol Wharf</div>
+        <div class="wind-speed" id="ampol-speed">-- kts</div>
+        <div class="wind-details" id="ampol-gust">Gust: --</div>
+        <div class="wind-details" id="ampol-dir">Dir: --</div>
       </div>
-      <div class="right-col">
-        <div class="wind-speed" id="bot-speed">-- kts</div>
-        <div class="wind-details" id="bot-gust">Gust: -- kts</div>
-      </div>
-    </div>
-    <div class="station-card">
-      <div>
-        <div class="station-name">Kurnell / Port Botany</div>
-        <div class="wind-details" id="kurnell-dir">Dir: --</div>
-      </div>
-      <div class="right-col">
-        <div class="wind-speed" id="kurnell-speed">-- kts</div>
-        <div class="wind-details" id="kurnell-gust">Gust: -- kts</div>
+      <div class="station-card">
+        <div class="station-name">Molineaux Pt</div>
+        <div class="wind-speed" id="molineaux-speed">-- kts</div>
+        <div class="wind-details" id="molineaux-gust">Gust: --</div>
+        <div class="wind-details" id="molineaux-dir">Dir: --</div>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-async function fetchWindData() {
-  const updateEl = document.getElementById('lastUpdated');
-  updateEl.textContent = "Updating...";
-
-  try {
-    // Open-Meteo marine-grade live telemetry feeds (no CORS limits, no scrapers, 100% reliable on mobile widgets)
-    // Sydney Harbour: -33.855, 151.255 | Botany Bay: -33.985, 151.215
-    const sydUrl = 'https://api.open-meteo.com/v1/forecast?latitude=-33.855&longitude=151.255&current=wind_speed_10m,wind_direction_10m,wind_gusts_10m&wind_speed_unit=kn';
-    const botUrl = 'https://api.open-meteo.com/v1/forecast?latitude=-33.985&longitude=151.215&current=wind_speed_10m,wind_direction_10m,wind_gusts_10m&wind_speed_unit=kn';
-
-    const [sydRes, botRes] = await Promise.all([
-      fetch(sydUrl).then(r => r.json()),
-      fetch(botUrl).then(r => r.json())
-    ]);
-
-    const syd = sydRes.current;
-    const bot = botRes.current;
-
-    function toCardinal(deg) {
-      const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
-      return dirs[Math.round(deg / 22.5) % 16];
-    }
-
-    // Sydney Harbour
-    document.getElementById('syd-speed').textContent = `${Math.round(syd.wind_speed_10m)} kts`;
-    document.getElementById('syd-gust').textContent = `Gust: ${Math.round(syd.wind_gusts_10m)} kts`;
-    document.getElementById('syd-dir').textContent = `${toCardinal(syd.wind_direction_10m)} (${Math.round(syd.wind_direction_10m)}°)`;
-
-    document.getElementById('heads-speed').textContent = `${Math.round(syd.wind_speed_10m * 1.12)} kts`;
-    document.getElementById('heads-gust').textContent = `Gust: ${Math.round(syd.wind_gusts_10m * 1.12)} kts`;
-    document.getElementById('heads-dir').textContent = `${toCardinal(syd.wind_direction_10m)} (${Math.round(syd.wind_direction_10m)}°)`;
-
-    // Botany Bay
-    document.getElementById('bot-speed').textContent = `${Math.round(bot.wind_speed_10m)} kts`;
-    document.getElementById('bot-gust').textContent = `Gust: ${Math.round(bot.wind_gusts_10m)} kts`;
-    document.getElementById('bot-dir').textContent = `${toCardinal(bot.wind_direction_10m)} (${Math.round(bot.wind_direction_10m)}°)`;
-
-    document.getElementById('kurnell-speed').textContent = `${Math.round(bot.wind_speed_10m * 1.08)} kts`;
-    document.getElementById('kurnell-gust').textContent = `Gust: ${Math.round(bot.wind_gusts_10m * 1.08)} kts`;
-    document.getElementById('kurnell-dir').textContent = `${toCardinal(bot.wind_direction_10m)} (${Math.round(bot.wind_direction_10m)}°)`;
-
-    const now = new Date();
-    updateEl.textContent = `Updated ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-  } catch (err) {
-    updateEl.textContent = "Error fetching data";
-  }
+function toCardinal(deg) {
+  const n = parseFloat(deg);
+  if (isNaN(n)) return '';
+  const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
+  return dirs[Math.round(n / 22.5) % 16] + ' ';
 }
 
-fetchWindData();
-setInterval(fetchWindData, 300000);
+function renderStation(prefix, obj) {
+  if (!obj) return;
+  document.getElementById(`${prefix}-speed`).textContent = `${obj.speed} kts`;
+  document.getElementById(`${prefix}-gust`).textContent = `Gust: ${obj.gust} kts`;
+  document.getElementById(`${prefix}-dir`).textContent = `Dir: ${toCardinal(obj.dir)}(${obj.dir}°)`;
+}
+
+function parseTextBlock(text, label) {
+  const idx = text.indexOf(label);
+  if (idx === -1) return null;
+  const sub = text.substring(idx, idx + 450);
+  const spd = sub.match(/Mean Speed:\s*([\d\.]+)\s*knots/i);
+  const gst = sub.match(/Gust:\s*([\d\.]+)\s*knots/i);
+  const dir = sub.match(/Dir:\s*([\d\.]+)\s*deg/i);
+  return {
+    speed: spd ? spd[1] : '--',
+    gust: gst ? gst[1] : '--',
+    dir: dir ? dir[1] : '--'
+  };
+}
+
+async function loadWinds() {
+  const statusEl = document.getElementById('lastUpdated');
+  
+  // 1. Primary: Read pre-scraped data.json from same GitHub repo (zero CORS issues)
+  try {
+    const res = await fetch(`./data.json?t=${Date.now()}`, { cache: 'no-store' });
+    if (res.ok) {
+      const data = await res.json();
+      renderStation('cake', data.wedding_cake);
+      renderStation('denison', data.fort_denison);
+      renderStation('ampol', data.ampol);
+      renderStation('molineaux', data.molineaux);
+      statusEl.textContent = data.updated || 'Live';
+      return;
+    }
+  } catch (e) {}
+
+  // 2. Fallback: Jina Reader bridge (CORS-enabled text extractor for Port Authority NSW)
+  try {
+    const res = await fetch('https://r.jina.ai/https://wavewindtide.portauthoritynsw.com.au/', {
+      headers: { 'Accept': 'text/plain' },
+      cache: 'no-store'
+    });
+    if (res.ok) {
+      const text = await res.text();
+      renderStation('cake', parseTextBlock(text, 'Western Wedding Cake'));
+      renderStation('denison', parseTextBlock(text, 'Fort Denison'));
+      renderStation('ampol', parseTextBlock(text, 'Ampol Wharf'));
+      renderStation('molineaux', parseTextBlock(text, 'Molineaux Point'));
+      const now = new Date();
+      statusEl.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      return;
+    }
+  } catch (e) {}
+
+  statusEl.textContent = "Offline";
+}
+
+loadWinds();
+setInterval(loadWinds, 180000);
 </script>
 </body>
 </html>
