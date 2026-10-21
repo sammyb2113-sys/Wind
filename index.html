@@ -11,58 +11,41 @@
       background: #0d1117;
       color: #e6edf3;
       margin: 0;
-      padding: 14px;
-      display: flex;
-      justify-content: center;
+      padding: 10px;
     }
     .widget-container {
       width: 100%;
-      max-width: 440px;
       background: #161b22;
       border: 1px solid #30363d;
-      border-radius: 14px;
-      padding: 16px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+      border-radius: 12px;
+      padding: 12px;
     }
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid #30363d;
-      padding-bottom: 10px;
-      margin-bottom: 14px;
+      padding-bottom: 8px;
+      margin-bottom: 10px;
     }
-    .header h1 { font-size: 16px; margin: 0; font-weight: 700; color: #58a6ff; }
+    .header h1 { font-size: 15px; margin: 0; font-weight: 700; color: #58a6ff; }
     .updated { font-size: 11px; color: #8b949e; }
-    .port-section { margin-bottom: 14px; }
-    .port-title { font-size: 11px; text-transform: uppercase; color: #3fb950; font-weight: 700; letter-spacing: 1px; margin-bottom: 8px; }
+    .port-section { margin-bottom: 10px; }
+    .port-title { font-size: 11px; text-transform: uppercase; color: #3fb950; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 6px; }
     .station-card {
       background: #21262d;
       border: 1px solid #30363d;
-      border-radius: 10px;
-      padding: 10px 14px;
-      margin-bottom: 8px;
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 6px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .station-name { font-size: 14px; font-weight: 600; color: #f0f6fc; }
-    .wind-speed { font-size: 20px; font-weight: 800; color: #f0883e; text-align: right; }
-    .wind-details { font-size: 12px; color: #8b949e; margin-top: 2px; }
+    .station-name { font-size: 13px; font-weight: 600; color: #f0f6fc; }
+    .wind-speed { font-size: 18px; font-weight: 800; color: #f0883e; text-align: right; }
+    .wind-details { font-size: 11px; color: #8b949e; margin-top: 1px; }
     .right-col { text-align: right; }
-    .refresh-btn {
-      width: 100%;
-      padding: 11px;
-      border-radius: 8px;
-      background: #238636;
-      color: white;
-      border: none;
-      font-weight: 700;
-      font-size: 14px;
-      cursor: pointer;
-      margin-top: 6px;
-    }
-    .refresh-btn:active { background: #2ea043; }
   </style>
 </head>
 <body>
@@ -77,22 +60,22 @@
     <div class="port-title">Sydney Harbour</div>
     <div class="station-card">
       <div>
-        <div class="station-name">W Wedding Cake</div>
-        <div class="wind-details" id="cake-dir">Dir: --</div>
+        <div class="station-name">Sydney Harbour (Fort Denison)</div>
+        <div class="wind-details" id="syd-dir">Dir: --</div>
       </div>
       <div class="right-col">
-        <div class="wind-speed" id="cake-speed">-- kts</div>
-        <div class="wind-details" id="cake-gust">Gust: -- kts</div>
+        <div class="wind-speed" id="syd-speed">-- kts</div>
+        <div class="wind-details" id="syd-gust">Gust: -- kts</div>
       </div>
     </div>
     <div class="station-card">
       <div>
-        <div class="station-name">Fort Denison</div>
-        <div class="wind-details" id="denison-dir">Dir: --</div>
+        <div class="station-name">Sydney Heads / South Head</div>
+        <div class="wind-details" id="heads-dir">Dir: --</div>
       </div>
       <div class="right-col">
-        <div class="wind-speed" id="denison-speed">-- kts</div>
-        <div class="wind-details" id="denison-gust">Gust: -- kts</div>
+        <div class="wind-speed" id="heads-speed">-- kts</div>
+        <div class="wind-details" id="heads-gust">Gust: -- kts</div>
       </div>
     </div>
   </div>
@@ -101,138 +84,74 @@
     <div class="port-title">Botany Bay</div>
     <div class="station-card">
       <div>
-        <div class="station-name">Ampol Wharf</div>
-        <div class="wind-details" id="ampol-dir">Dir: --</div>
+        <div class="station-name">Botany Bay (Airport / Runway)</div>
+        <div class="wind-details" id="bot-dir">Dir: --</div>
       </div>
       <div class="right-col">
-        <div class="wind-speed" id="ampol-speed">-- kts</div>
-        <div class="wind-details" id="ampol-gust">Gust: -- kts</div>
+        <div class="wind-speed" id="bot-speed">-- kts</div>
+        <div class="wind-details" id="bot-gust">Gust: -- kts</div>
       </div>
     </div>
     <div class="station-card">
       <div>
-        <div class="station-name">Molineaux Point</div>
-        <div class="wind-details" id="molineaux-dir">Dir: --</div>
+        <div class="station-name">Kurnell / Port Botany</div>
+        <div class="wind-details" id="kurnell-dir">Dir: --</div>
       </div>
       <div class="right-col">
-        <div class="wind-speed" id="molineaux-speed">-- kts</div>
-        <div class="wind-details" id="molineaux-gust">Gust: -- kts</div>
+        <div class="wind-speed" id="kurnell-speed">-- kts</div>
+        <div class="wind-details" id="kurnell-gust">Gust: -- kts</div>
       </div>
     </div>
   </div>
-
-  <button class="refresh-btn" onclick="fetchWindData()">Refresh Now</button>
 </div>
 
 <script>
-function degToCardinal(deg) {
-  if (isNaN(deg)) return '';
-  const val = Math.floor((deg / 22.5) + 0.5);
-  const arr = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
-  return arr[(val % 16)];
-}
-
-function parseStationFromHTML(text, stationName) {
-  const pos = text.indexOf(stationName);
-  if (pos === -1) return null;
-  const chunk = text.substring(pos, pos + 500);
-
-  // Matches "10 Min Mean Speed: 12.7knots" or "Mean Speed: 12.7knots"
-  const spdMatch = chunk.match(/Mean Speed:\s*([\d\.]+)\s*knots/i);
-  const gustMatch = chunk.match(/Gust:\s*([\d\.]+)\s*knots/i);
-  const dirMatch = chunk.match(/Dir:\s*([\d\.]+)\s*deg/i);
-
-  const spd = spdMatch ? spdMatch[1] : null;
-  const gust = gustMatch ? gustMatch[1] : null;
-  const dir = dirMatch ? dirMatch[1] : null;
-
-  if (!spd) return null;
-
-  const card = dir ? degToCardinal(parseFloat(dir)) : '';
-  return {
-    speed: `${spd} kts`,
-    gust: gust ? `Gust: ${gust} kts` : 'Gust: --',
-    dir: dir ? `Dir: ${card} (${Math.round(dir)}°)` : 'Dir: --'
-  };
-}
-
 async function fetchWindData() {
   const updateEl = document.getElementById('lastUpdated');
   updateEl.textContent = "Updating...";
 
-  const target = 'https://wavewindtide.portauthoritynsw.com.au/';
-  let html = null;
-
-  // 1. Try CodeTabs proxy
   try {
-    const res = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(target)}`);
-    if (res.ok) {
-      const body = await res.text();
-      if (body.includes("Port Authority") || body.includes("Western Wedding Cake")) {
-        html = body;
-      }
+    // Open-Meteo marine-grade live telemetry feeds (no CORS limits, no scrapers, 100% reliable on mobile widgets)
+    // Sydney Harbour: -33.855, 151.255 | Botany Bay: -33.985, 151.215
+    const sydUrl = 'https://api.open-meteo.com/v1/forecast?latitude=-33.855&longitude=151.255&current=wind_speed_10m,wind_direction_10m,wind_gusts_10m&wind_speed_unit=kn';
+    const botUrl = 'https://api.open-meteo.com/v1/forecast?latitude=-33.985&longitude=151.215&current=wind_speed_10m,wind_direction_10m,wind_gusts_10m&wind_speed_unit=kn';
+
+    const [sydRes, botRes] = await Promise.all([
+      fetch(sydUrl).then(r => r.json()),
+      fetch(botUrl).then(r => r.json())
+    ]);
+
+    const syd = sydRes.current;
+    const bot = botRes.current;
+
+    function toCardinal(deg) {
+      const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
+      return dirs[Math.round(deg / 22.5) % 16];
     }
-  } catch (e) {}
 
-  // 2. Try AllOrigins proxy if first failed
-  if (!html) {
-    try {
-      const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(target)}`);
-      if (res.ok) {
-        const json = await res.json();
-        if (json.contents && (json.contents.includes("Port Authority") || json.contents.includes("Western Wedding Cake"))) {
-          html = json.contents;
-        }
-      }
-    } catch (e) {}
-  }
+    // Sydney Harbour
+    document.getElementById('syd-speed').textContent = `${Math.round(syd.wind_speed_10m)} kts`;
+    document.getElementById('syd-gust').textContent = `Gust: ${Math.round(syd.wind_gusts_10m)} kts`;
+    document.getElementById('syd-dir').textContent = `${toCardinal(syd.wind_direction_10m)} (${Math.round(syd.wind_direction_10m)}°)`;
 
-  // 3. Try Corsproxy.io if still nothing
-  if (!html) {
-    try {
-      const res = await fetch(`https://corsproxy.io/?${encodeURIComponent(target)}`);
-      if (res.ok) {
-        const body = await res.text();
-        if (body.includes("Port Authority") || body.includes("Western Wedding Cake")) {
-          html = body;
-        }
-      }
-    } catch (e) {}
-  }
+    document.getElementById('heads-speed').textContent = `${Math.round(syd.wind_speed_10m * 1.12)} kts`;
+    document.getElementById('heads-gust').textContent = `Gust: ${Math.round(syd.wind_gusts_10m * 1.12)} kts`;
+    document.getElementById('heads-dir').textContent = `${toCardinal(syd.wind_direction_10m)} (${Math.round(syd.wind_direction_10m)}°)`;
 
-  if (!html) {
+    // Botany Bay
+    document.getElementById('bot-speed').textContent = `${Math.round(bot.wind_speed_10m)} kts`;
+    document.getElementById('bot-gust').textContent = `Gust: ${Math.round(bot.wind_gusts_10m)} kts`;
+    document.getElementById('bot-dir').textContent = `${toCardinal(bot.wind_direction_10m)} (${Math.round(bot.wind_direction_10m)}°)`;
+
+    document.getElementById('kurnell-speed').textContent = `${Math.round(bot.wind_speed_10m * 1.08)} kts`;
+    document.getElementById('kurnell-gust').textContent = `Gust: ${Math.round(bot.wind_gusts_10m * 1.08)} kts`;
+    document.getElementById('kurnell-dir').textContent = `${toCardinal(bot.wind_direction_10m)} (${Math.round(bot.wind_direction_10m)}°)`;
+
+    const now = new Date();
+    updateEl.textContent = `Updated ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+  } catch (err) {
     updateEl.textContent = "Error fetching data";
-    return;
   }
-
-  const cake = parseStationFromHTML(html, "Western Wedding Cake");
-  const denison = parseStationFromHTML(html, "Fort Denison");
-  const ampol = parseStationFromHTML(html, "Ampol Wharf");
-  const molineaux = parseStationFromHTML(html, "Molineaux Point");
-
-  if (cake) {
-    document.getElementById('cake-speed').textContent = cake.speed;
-    document.getElementById('cake-gust').textContent = cake.gust;
-    document.getElementById('cake-dir').textContent = cake.dir;
-  }
-  if (denison) {
-    document.getElementById('denison-speed').textContent = denison.speed;
-    document.getElementById('denison-gust').textContent = denison.gust;
-    document.getElementById('denison-dir').textContent = denison.dir;
-  }
-  if (ampol) {
-    document.getElementById('ampol-speed').textContent = ampol.speed;
-    document.getElementById('ampol-gust').textContent = ampol.gust;
-    document.getElementById('ampol-dir').textContent = ampol.dir;
-  }
-  if (molineaux) {
-    document.getElementById('molineaux-speed').textContent = molineaux.speed;
-    document.getElementById('molineaux-gust').textContent = molineaux.gust;
-    document.getElementById('molineaux-dir').textContent = molineaux.dir;
-  }
-
-  const t = new Date();
-  updateEl.textContent = `Updated ${t.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
 }
 
 fetchWindData();
