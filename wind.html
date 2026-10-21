@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NSW Ports Live Wind</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      margin: 0;
+      padding: 12px;
+      display: flex;
+      justify-content: center;
+    }
+    .widget-container {
+      width: 100%;
+      max-width: 480px;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #30363d;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+    .header h1 { font-size: 16px; margin: 0; font-weight: 600; color: #58a6ff; }
+    .updated { font-size: 11px; color: #8b949e; }
+    .port-section { margin-bottom: 16px; }
+    .port-title { font-size: 12px; text-transform: uppercase; color: #7ee787; letter-spacing: 1px; margin-bottom: 8px; }
+    .station-card {
+      background: #21262d;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .station-name { font-size: 13px; font-weight: 500; }
+    .wind-speed { font-size: 18px; font-weight: 700; color: #f0883e; }
+    .wind-details { font-size: 11px; color: #8b949e; text-align: right; }
+    .compass-arrow { display: inline-block; transition: transform 0.3s ease; }
+    .refresh-btn {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      background: #238636;
+      color: white;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="widget-container">
+  <div class="header">
+    <h1>⚓ NSW Port Winds</h1>
+    <span id="lastUpdated" class="updated">Updating...</span>
+  </div>
+
+  <div class="port-section">
+    <div class="port-title">Sydney Harbour</div>
+    <div class="station-card" id="station-wedding-cake">
+      <div>
+        <div class="station-name">W Wedding Cake</div>
+        <div class="wind-details" id="cake-dir">Dir: --°</div>
+      </div>
+      <div>
+        <div class="wind-speed" id="cake-speed">-- kts</div>
+        <div class="wind-details" id="cake-gust">Gust: -- kts</div>
+      </div>
+    </div>
+    <div class="station-card" id="station-fort-denison">
+      <div>
+        <div class="station-name">Fort Denison</div>
+        <div class="wind-details" id="denison-dir">Dir: --°</div>
+      </div>
+      <div>
+        <div class="wind-speed" id="denison-speed">-- kts</div>
+        <div class="wind-details" id="denison-gust">Gust: -- kts</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="port-section">
+    <div class="port-title">Botany Bay</div>
+    <div class="station-card" id="station-ampol">
+      <div>
+        <div class="station-name">Ampol Wharf</div>
+        <div class="wind-details" id="ampol-dir">Dir: --°</div>
+      </div>
+      <div>
+        <div class="wind-speed" id="ampol-speed">-- kts</div>
+        <div class="wind-details" id="ampol-gust">Gust: -- kts</div>
+      </div>
+    </div>
+    <div class="station-card" id="station-molineaux">
+      <div>
+        <div class="station-name">Molineaux Point</div>
+        <div class="wind-details" id="molineaux-dir">Dir: --°</div>
+      </div>
+      <div>
+        <div class="wind-speed" id="molineaux-speed">-- kts</div>
+        <div class="wind-details" id="molineaux-gust">Gust: -- kts</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="refresh-btn" onclick="fetchWindData()">Refresh Now</button>
+</div>
+
+<script>
+async function fetchWindData() {
+  document.getElementById('lastUpdated').textContent = "Updating...";
+  try {
+    // Uses a public CORS proxy to grab the raw homepage HTML from Port Authority NSW
+    const targetUrl = 'https://wavewindtide.portauthoritynsw.com.au/';
+    const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl);
+    
+    const resp = await fetch(proxyUrl);
+    const html = await resp.text();
+
+    function parseStation(stationKeyword) {
+      const idx = html.indexOf(stationKeyword);
+      if (idx === -1) return null;
+      const snippet = html.substring(idx, idx + 400);
+
+      const speedMatch = snippet.match(/Mean Speed:\s*([\d\.]+)\s*knots/i);
+      const gustMatch = snippet.match(/Gust:\s*([\d\.]+)\s*knots/i);
+      const dirMatch = snippet.match(/Dir:\s*([\d\.]+)deg/i);
+      const timeMatch = snippet.match(/at\s*(\d{4},\s*\d{1,2}\s*[A-Za-z]{3}\s*\d{4})/i);
+
+      return {
+        speed: speedMatch ? speedMatch[1] : '--',
+        gust: gustMatch ? gustMatch[1] : '--',
+        dir: dirMatch ? dirMatch[1] : '--',
+        time: timeMatch ? timeMatch[1] : null
+      };
+    }
+
+    const cake = parseStation("Wedding Cake") || parseStation("Western Wedding Cake");
+    const denison = parseStation("Fort Denison");
+    const ampol = parseStation("Ampol Wharf");
+    const molineaux = parseStation("Molineaux Point");
+
+    if (cake) {
+      document.getElementById('cake-speed').textContent = `${cake.speed} kts`;
+      document.getElementById('cake-gust').textContent = `Gust: ${cake.gust} kts`;
+      document.getElementById('cake-dir').textContent = `Dir: ${cake.dir}°`;
+    }
+    if (denison) {
+      document.getElementById('denison-speed').textContent = `${denison.speed} kts`;
+      document.getElementById('denison-gust').textContent = `Gust: ${denison.gust} kts`;
+      document.getElementById('denison-dir').textContent = `Dir: ${denison.dir}°`;
+    }
+    if (ampol) {
+      document.getElementById('ampol-speed').textContent = `${ampol.speed} kts`;
+      document.getElementById('ampol-gust').textContent = `Gust: ${ampol.gust} kts`;
+      document.getElementById('ampol-dir').textContent = `Dir: ${ampol.dir}°`;
+    }
+    if (molineaux) {
+      document.getElementById('molineaux-speed').textContent = `${molineaux.speed} kts`;
+      document.getElementById('molineaux-gust').textContent = `Gust: ${molineaux.gust} kts`;
+      document.getElementById('molineaux-dir').textContent = `Dir: ${molineaux.dir}°`;
+    }
+
+    const now = new Date();
+    document.getElementById('lastUpdated').textContent = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+  } catch (err) {
+    document.getElementById('lastUpdated').textContent = "Error fetching data";
+    console.error(err);
+  }
+}
+
+// Initial fetch and auto-refresh every 5 minutes (300,000 ms)
+fetchWindData();
+setInterval(fetchWindData, 300000);
+</script>
+</body>
+</html>
