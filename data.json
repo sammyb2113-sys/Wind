@@ -1,0 +1,27 @@
+{
+  "updated": "22:19 AEDT",
+  "wedding_cake": {
+    "speed": "12.1",
+    "gust": "14.0",
+    "dir": "49",
+    "time": "2210, 21 Oct 2026"
+  },
+  "fort_denison": {
+    "speed": "8.4",
+    "gust": "11.0",
+    "dir": "70",
+    "time": "2210, 21 Oct 2026"
+  },
+  "ampol": {
+    "speed": "9.2",
+    "gust": "11.0",
+    "dir": "66",
+    "time": "2210, 21 Oct 2026"
+  },
+  "molineaux": {
+    "speed": "5.3",
+    "gust": "9.6",
+    "dir": "49",
+    "time": "2210, 21 Oct 2026"
+  }
+}
