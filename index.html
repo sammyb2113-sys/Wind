@@ -32,7 +32,7 @@
       padding-bottom: 10px;
       margin-bottom: 14px;
     }
-    .header h1 { font-size: 17px; margin: 0; font-weight: 700; color: #58a6ff; }
+    .header h1 { font-size: 16px; margin: 0; font-weight: 700; color: #58a6ff; }
     .updated { font-size: 11px; color: #8b949e; }
     .port-section { margin-bottom: 14px; }
     .port-title { font-size: 11px; text-transform: uppercase; color: #3fb950; font-weight: 700; letter-spacing: 1px; margin-bottom: 8px; }
@@ -52,7 +52,7 @@
     .right-col { text-align: right; }
     .refresh-btn {
       width: 100%;
-      padding: 10px;
+      padding: 11px;
       border-radius: 8px;
       background: #238636;
       color: white;
@@ -125,41 +125,34 @@
 </div>
 
 <script>
-async function fetchWithFallback(url) {
-  const proxies = [
-    (u) => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
-    (u) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
-    (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`
-  ];
-
-  for (const proxyGen of proxies) {
-    try {
-      const target = proxyGen(url);
-      const res = await fetch(target, { cache: 'no-store' });
-      if (res.ok) {
-        const text = await res.text();
-        if (text && text.includes("Port Authority")) return text;
-      }
-    } catch (e) {
-      // try next proxy
-    }
-  }
-  throw new Error("Unable to reach feed");
+function degToCardinal(deg) {
+  if (isNaN(deg)) return '';
+  const val = Math.floor((deg / 22.5) + 0.5);
+  const arr = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
+  return arr[(val % 16)];
 }
 
-function parseStation(html, keyword) {
-  const idx = html.indexOf(keyword);
-  if (idx === -1) return null;
-  const chunk = html.substring(idx, idx + 450);
+function parseStationFromHTML(text, stationName) {
+  const pos = text.indexOf(stationName);
+  if (pos === -1) return null;
+  const chunk = text.substring(pos, pos + 500);
 
-  const speed = chunk.match(/Mean Speed:\s*([\d\.]+)\s*knots/i);
-  const gust = chunk.match(/Gust:\s*([\d\.]+)\s*knots/i);
-  const dir = chunk.match(/Dir:\s*([\d\.]+)deg/i);
+  // Matches "10 Min Mean Speed: 12.7knots" or "Mean Speed: 12.7knots"
+  const spdMatch = chunk.match(/Mean Speed:\s*([\d\.]+)\s*knots/i);
+  const gustMatch = chunk.match(/Gust:\s*([\d\.]+)\s*knots/i);
+  const dirMatch = chunk.match(/Dir:\s*([\d\.]+)\s*deg/i);
 
+  const spd = spdMatch ? spdMatch[1] : null;
+  const gust = gustMatch ? gustMatch[1] : null;
+  const dir = dirMatch ? dirMatch[1] : null;
+
+  if (!spd) return null;
+
+  const card = dir ? degToCardinal(parseFloat(dir)) : '';
   return {
-    speed: speed ? speed[1] : '--',
-    gust: gust ? gust[1] : '--',
-    dir: dir ? `${dir[1]}°` : '--'
+    speed: `${spd} kts`,
+    gust: gust ? `Gust: ${gust} kts` : 'Gust: --',
+    dir: dir ? `Dir: ${card} (${Math.round(dir)}°)` : 'Dir: --'
   };
 }
 
@@ -167,40 +160,79 @@ async function fetchWindData() {
   const updateEl = document.getElementById('lastUpdated');
   updateEl.textContent = "Updating...";
 
+  const target = 'https://wavewindtide.portauthoritynsw.com.au/';
+  let html = null;
+
+  // 1. Try CodeTabs proxy
   try {
-    const rawHtml = await fetchWithFallback('https://wavewindtide.portauthoritynsw.com.au/');
+    const res = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(target)}`);
+    if (res.ok) {
+      const body = await res.text();
+      if (body.includes("Port Authority") || body.includes("Western Wedding Cake")) {
+        html = body;
+      }
+    }
+  } catch (e) {}
 
-    const cake = parseStation(rawHtml, "Western Wedding Cake");
-    const denison = parseStation(rawHtml, "Fort Denison");
-    const ampol = parseStation(rawHtml, "Ampol Wharf");
-    const molineaux = parseStation(rawHtml, "Molineaux Point");
-
-    if (cake) {
-      document.getElementById('cake-speed').textContent = `${cake.speed} kts`;
-      document.getElementById('cake-gust').textContent = `Gust: ${cake.gust} kts`;
-      document.getElementById('cake-dir').textContent = `Dir: ${cake.dir}`;
-    }
-    if (denison) {
-      document.getElementById('denison-speed').textContent = `${denison.speed} kts`;
-      document.getElementById('denison-gust').textContent = `Gust: ${denison.gust} kts`;
-      document.getElementById('denison-dir').textContent = `Dir: ${denison.dir}`;
-    }
-    if (ampol) {
-      document.getElementById('ampol-speed').textContent = `${ampol.speed} kts`;
-      document.getElementById('ampol-gust').textContent = `Gust: ${ampol.gust} kts`;
-      document.getElementById('ampol-dir').textContent = `Dir: ${ampol.dir}`;
-    }
-    if (molineaux) {
-      document.getElementById('molineaux-speed').textContent = `${molineaux.speed} kts`;
-      document.getElementById('molineaux-gust').textContent = `Gust: ${molineaux.gust} kts`;
-      document.getElementById('molineaux-dir').textContent = `Dir: ${molineaux.dir}`;
-    }
-
-    const t = new Date();
-    updateEl.textContent = `Updated ${t.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-  } catch (err) {
-    updateEl.textContent = "Error fetching data";
+  // 2. Try AllOrigins proxy if first failed
+  if (!html) {
+    try {
+      const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(target)}`);
+      if (res.ok) {
+        const json = await res.json();
+        if (json.contents && (json.contents.includes("Port Authority") || json.contents.includes("Western Wedding Cake"))) {
+          html = json.contents;
+        }
+      }
+    } catch (e) {}
   }
+
+  // 3. Try Corsproxy.io if still nothing
+  if (!html) {
+    try {
+      const res = await fetch(`https://corsproxy.io/?${encodeURIComponent(target)}`);
+      if (res.ok) {
+        const body = await res.text();
+        if (body.includes("Port Authority") || body.includes("Western Wedding Cake")) {
+          html = body;
+        }
+      }
+    } catch (e) {}
+  }
+
+  if (!html) {
+    updateEl.textContent = "Error fetching data";
+    return;
+  }
+
+  const cake = parseStationFromHTML(html, "Western Wedding Cake");
+  const denison = parseStationFromHTML(html, "Fort Denison");
+  const ampol = parseStationFromHTML(html, "Ampol Wharf");
+  const molineaux = parseStationFromHTML(html, "Molineaux Point");
+
+  if (cake) {
+    document.getElementById('cake-speed').textContent = cake.speed;
+    document.getElementById('cake-gust').textContent = cake.gust;
+    document.getElementById('cake-dir').textContent = cake.dir;
+  }
+  if (denison) {
+    document.getElementById('denison-speed').textContent = denison.speed;
+    document.getElementById('denison-gust').textContent = denison.gust;
+    document.getElementById('denison-dir').textContent = denison.dir;
+  }
+  if (ampol) {
+    document.getElementById('ampol-speed').textContent = ampol.speed;
+    document.getElementById('ampol-gust').textContent = ampol.gust;
+    document.getElementById('ampol-dir').textContent = ampol.dir;
+  }
+  if (molineaux) {
+    document.getElementById('molineaux-speed').textContent = molineaux.speed;
+    document.getElementById('molineaux-gust').textContent = molineaux.gust;
+    document.getElementById('molineaux-dir').textContent = molineaux.dir;
+  }
+
+  const t = new Date();
+  updateEl.textContent = `Updated ${t.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
 }
 
 fetchWindData();
