@@ -18,28 +18,28 @@
       flex-direction: column;
       justify-content: space-between;
       height: 100vh;
-      padding: 10px 10px;
+      padding: 8px 10px;
       background: #161b22;
       border: 1px solid #30363d;
-      border-radius: 14px;
+      border-radius: 12px;
     }
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 6px;
+      padding-bottom: 5px;
       border-bottom: 1px solid #30363d;
     }
-    .header h1 { font-size: 13.5px; font-weight: 700; color: #58a6ff; }
-    .updated { font-size: 10.5px; color: #8b949e; }
-    
+    .header h1 { font-size: 13px; font-weight: 700; color: #58a6ff; }
+    .updated { font-size: 10px; color: #8b949e; }
+
     .port-section {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 5px;
       flex: 1;
-      justify-content: center;
-      padding: 4px 0;
+      justify-content: space-evenly;
+      padding: 3px 0;
     }
     .port-title-bar {
       display: flex;
@@ -47,60 +47,63 @@
       align-items: center;
     }
     .port-title {
-      font-size: 10.5px;
+      font-size: 10px;
       text-transform: uppercase;
       color: #3fb950;
       font-weight: 800;
       letter-spacing: 0.8px;
     }
     .tide-tag {
-      font-size: 10px;
+      font-size: 9.5px;
       background: #1f2a3c;
       color: #79c0ff;
       border: 1px solid #388bfd40;
       border-radius: 4px;
-      padding: 1px 6px;
+      padding: 1px 5px;
       font-weight: 600;
     }
 
-    .grid {
+    .grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 6px;
+      gap: 5px;
     }
     .station-card {
       background: #21262d;
       border: 1px solid #30363d;
-      border-radius: 8px;
-      padding: 8px 10px;
+      border-radius: 7px;
+      padding: 6px 8px;
     }
     .station-name {
-      font-size: 11.5px;
+      font-size: 11px;
       font-weight: 600;
       color: #c9d1d9;
-      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .wind-speed {
-      font-size: 21px;
+      font-size: 18px;
       font-weight: 800;
       color: #f0883e;
       line-height: 1.1;
+      margin: 2px 0 1px 0;
     }
     .wind-details {
-      font-size: 10.5px;
+      font-size: 9.5px;
       color: #8b949e;
-      margin-top: 2px;
+      line-height: 1.2;
     }
 
     .sea-strip {
       background: #121820;
       border: 1px dashed #30363d;
       border-radius: 6px;
-      padding: 5px 8px;
+      padding: 4px 7px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 10.5px;
+      font-size: 10px;
       color: #a5d6ff;
     }
     .sea-strip strong { color: #58a6ff; }
@@ -114,13 +117,13 @@
     <span id="lastUpdated" class="updated">Syncing...</span>
   </div>
 
-  <!-- Sydney Harbour -->
+  <!-- Sydney Harbour: 4 Stations + Tide + Offshore Swell -->
   <div class="port-section">
     <div class="port-title-bar">
       <span class="port-title">Sydney Harbour</span>
       <span class="tide-tag">Tide: <span id="syd-tide">--</span></span>
     </div>
-    <div class="grid">
+    <div class="grid-2">
       <div class="station-card">
         <div class="station-name">W Wedding Cake</div>
         <div class="wind-speed" id="cake-speed">-- kts</div>
@@ -133,6 +136,18 @@
         <div class="wind-details" id="denison-gust">Gust: --</div>
         <div class="wind-details" id="denison-dir">Dir: --</div>
       </div>
+      <div class="station-card">
+        <div class="station-name">Manns Pt / Berry</div>
+        <div class="wind-speed" id="manns-speed">-- kts</div>
+        <div class="wind-details" id="manns-gust">Gust: --</div>
+        <div class="wind-details" id="manns-dir">Dir: --</div>
+      </div>
+      <div class="station-card">
+        <div class="station-name">Glebe Island</div>
+        <div class="wind-speed" id="glebe-speed">-- kts</div>
+        <div class="wind-details" id="glebe-gust">Gust: --</div>
+        <div class="wind-details" id="glebe-dir">Dir: --</div>
+      </div>
     </div>
     <div class="sea-strip">
       <span>🌊 <strong>Offshore Swell:</strong> <span id="syd-swell">--</span></span>
@@ -140,13 +155,13 @@
     </div>
   </div>
 
-  <!-- Botany Bay -->
+  <!-- Botany Bay: 3 Stations + Tide + Bay Waves -->
   <div class="port-section">
     <div class="port-title-bar">
       <span class="port-title">Botany Bay</span>
       <span class="tide-tag">Tide: <span id="bot-tide">--</span></span>
     </div>
-    <div class="grid">
+    <div class="grid-2">
       <div class="station-card">
         <div class="station-name">Ampol Wharf</div>
         <div class="wind-speed" id="ampol-speed">-- kts</div>
@@ -154,10 +169,22 @@
         <div class="wind-details" id="ampol-dir">Dir: --</div>
       </div>
       <div class="station-card">
-        <div class="station-name">Molineaux Pt</div>
+        <div class="station-name">Molineaux Point</div>
         <div class="wind-speed" id="molineaux-speed">-- kts</div>
         <div class="wind-details" id="molineaux-gust">Gust: --</div>
         <div class="wind-details" id="molineaux-dir">Dir: --</div>
+      </div>
+      <div class="station-card" style="grid-column: span 2;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div class="station-name">Airport / Runway (BOM)</div>
+            <div class="wind-details" id="airport-dir">Dir: --</div>
+          </div>
+          <div style="text-align: right;">
+            <div class="wind-speed" id="airport-speed" style="margin: 0;">-- kts</div>
+            <div class="wind-details" id="airport-gust">Gust: --</div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="sea-strip">
@@ -177,9 +204,12 @@ function toCardinal(deg) {
 
 function renderStation(prefix, obj) {
   if (!obj) return;
-  document.getElementById(`${prefix}-speed`).textContent = `${obj.speed} kts`;
-  document.getElementById(`${prefix}-gust`).textContent = `Gust: ${obj.gust} kts`;
-  document.getElementById(`${prefix}-dir`).textContent = `Dir: ${toCardinal(obj.dir)}(${obj.dir}°)`;
+  const spdEl = document.getElementById(`${prefix}-speed`);
+  const gstEl = document.getElementById(`${prefix}-gust`);
+  const dirEl = document.getElementById(`${prefix}-dir`);
+  if (spdEl) spdEl.textContent = `${obj.speed} kts`;
+  if (gstEl) gstEl.textContent = `Gust: ${obj.gust} kts`;
+  if (dirEl) dirEl.textContent = `Dir: ${toCardinal(obj.dir)}(${obj.dir}°)`;
 }
 
 async function loadData() {
@@ -190,8 +220,11 @@ async function loadData() {
       const d = await res.json();
       renderStation('cake', d.wedding_cake);
       renderStation('denison', d.fort_denison);
+      renderStation('manns', d.manns_point);
+      renderStation('glebe', d.glebe_island);
       renderStation('ampol', d.ampol);
       renderStation('molineaux', d.molineaux);
+      renderStation('airport', d.sydney_airport);
 
       if (d.syd_tide) document.getElementById('syd-tide').textContent = d.syd_tide;
       if (d.bot_tide) document.getElementById('bot-tide').textContent = d.bot_tide;
