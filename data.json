@@ -1,27 +1,27 @@
 {
-  "updated": "11:51 AEDT",
+  "updated": "12:29 AEDT",
   "wedding_cake": {
-    "speed": "16.1",
-    "gust": "18.7",
-    "dir": "65",
-    "time": "1150, 22 Oct 2026"
+    "speed": "15.8",
+    "gust": "19.0",
+    "dir": "61",
+    "time": "1220, 22 Oct 2026"
   },
   "fort_denison": {
-    "speed": "16.5",
+    "speed": "17.3",
     "gust": "21.0",
-    "dir": "80",
-    "time": "1150, 22 Oct 2026"
+    "dir": "81",
+    "time": "1220, 22 Oct 2026"
   },
   "ampol": {
-    "speed": "18.0",
-    "gust": "23.0",
-    "dir": "82",
-    "time": "1150, 22 Oct 2026"
+    "speed": "18.2",
+    "gust": "22.0",
+    "dir": "81",
+    "time": "1220, 22 Oct 2026"
   },
   "molineaux": {
-    "speed": "14.3",
-    "gust": "24.7",
-    "dir": "61",
-    "time": "1150, 22 Oct 2026"
+    "speed": "13.3",
+    "gust": "22.1",
+    "dir": "60",
+    "time": "1220, 22 Oct 2026"
   }
 }
