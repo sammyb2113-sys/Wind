@@ -1,24 +1,39 @@
 {
-  "updated": "20:29 AEDT",
+  "updated": "20:57 AEDT",
   "wedding_cake": {
-    "speed": "12.6",
-    "gust": "15.0",
-    "dir": "47"
+    "speed": "21.3",
+    "gust": "27.3",
+    "dir": "35"
   },
   "fort_denison": {
-    "speed": "8.4",
-    "gust": "12.0",
-    "dir": "71"
+    "speed": "13.6",
+    "gust": "21.0",
+    "dir": "60"
+  },
+  "manns_point": {
+    "speed": "4.4",
+    "gust": "7.1",
+    "dir": "42"
+  },
+  "glebe_island": {
+    "speed": "13.1",
+    "gust": "25.1",
+    "dir": "61"
   },
   "ampol": {
-    "speed": "18.1",
-    "gust": "21.0",
-    "dir": "77"
+    "speed": "12.1",
+    "gust": "16.0",
+    "dir": "70"
   },
   "molineaux": {
-    "speed": "11.5",
-    "gust": "20.5",
-    "dir": "60"
+    "speed": "7.3",
+    "gust": "12.6",
+    "dir": "55"
+  },
+  "sydney_airport": {
+    "speed": "8.6",
+    "gust": "11.0",
+    "dir": "52"
   },
   "syd_tide": "--",
   "bot_tide": "--",
@@ -28,8 +43,8 @@
     "dir": "--"
   },
   "bot_wave": {
-    "hs": "1.62m",
-    "tp": "8.23s",
+    "hs": "1.60m",
+    "tp": "8.48s",
     "dir": "76"
   }
 }
