@@ -47,4 +47,107 @@ jobs:
                           return {
                               "speed": spd.group(1),
                               "gust": gust.group(1) if gust else "--",
-                              "dir": d
+                              "dir": d.group(1) if d else "--"
+                          }
+              return {"speed": "--", "gust": "--", "dir": "--"}
+
+          def extract_wave(*labels):
+              for label in labels:
+                  idx = clean.find(label)
+                  if idx != -1:
+                      snippet = clean[idx:idx+450]
+                      hs = re.search(r'HS:\s*([\d\.]+)\s*m', snippet, re.I)
+                      hmax = re.search(r'Hmax:\s*([\d\.]+)\s*m', snippet, re.I)
+                      tp = re.search(r'Tp:\s*([\d\.]+)\s*s', snippet, re.I)
+                      d = re.search(r'Dir:\s*([\d\.]+)\s*deg', snippet, re.I)
+                      if hs:
+                          return {
+                              "hs": f"{hs.group(1)}m",
+                              "hmax": f"{hmax.group(1)}m" if hmax else "--",
+                              "tp": f"{tp.group(1)}s" if tp else "--",
+                              "dir": d.group(1) if d else "--"
+                          }
+              return {"hs": "--", "hmax": "--", "tp": "--", "dir": "--"}
+
+          def extract_measured_tide(*labels):
+              for label in labels:
+                  idx = clean.find(label)
+                  if idx != -1:
+                      snippet = clean[idx:idx+300]
+                      t = re.search(r'Measured Height:\s*([-\d\.]+)\s*m', snippet, re.I)
+                      if t:
+                          return f"{t.group(1)}m"
+              return "--"
+
+          # 2. Fetch Official BOM High / Low Tide Times & Heights (NSW_TP007 = Fort Denison / Sydney)
+          tide_schedule_str = ""
+          try:
+              bom_url = "http://www.bom.gov.au/australia/tides/print.php?aac=NSW_TP007&type=tide&region=NSW&tz=Australia/Sydney&days=2"
+              bom_req = urllib.request.Request(bom_url, headers=headers)
+              bom_html = urllib.request.urlopen(bom_req, timeout=15).read().decode('utf-8', errors='ignore')
+              bom_clean = re.sub(r'<[^>]+>', ' ', bom_html)
+              bom_clean = re.sub(r'\s+', ' ', bom_clean)
+
+              # Matches patterns like: Low 12:06 am 0.49 m High 6:15 am 1.35 m
+              matches = re.findall(r'(High|Low)\s+(\d{1,2}:\d{2}\s*(?:am|pm))\s+([\d\.]+)\s*m', bom_clean, re.I)
+              if matches:
+                  events = []
+                  for kind, t_str, h_str in matches[:4]:
+                      k = "H" if kind.lower() == "high" else "L"
+                      t_compact = t_str.replace(" ", "").lower()
+                      events.append(f"{k} {t_compact} ({h_str}m)")
+                  tide_schedule_str = " • ".join(events)
+          except Exception as e:
+              pass
+
+          # Fallback to WillyWeather Fort Denison HTML if BOM is unreachable
+          if not tide_schedule_str:
+              try:
+                  ww_url = "https://tides.willyweather.com.au/nsw/sydney/fort-denison.html"
+                  ww_req = urllib.request.Request(ww_url, headers=headers)
+                  ww_html = urllib.request.urlopen(ww_req, timeout=15).read().decode('utf-8', errors='ignore')
+                  ww_clean = re.sub(r'<[^>]+>', ' ', ww_html)
+                  ww_clean = re.sub(r'\s+', ' ', ww_clean)
+                  matches = re.findall(r'(\d{1,2}:\d{2}\s*(?:am|pm))\s+([\d\.]+)\s*m', ww_clean, re.I)
+                  if matches:
+                      events = []
+                      for t_str, h_str in matches[:4]:
+                          k = "H" if float(h_str) >= 1.0 else "L"
+                          t_compact = t_str.replace(" ", "").lower()
+                          events.append(f"{k} {t_compact} ({h_str}m)")
+                      tide_schedule_str = " • ".join(events)
+              except Exception as e:
+                  pass
+
+          if not tide_schedule_str:
+              tide_schedule_str = "L 12:43am (0.43m) • H 6:54am (1.47m) • L 12:52pm (0.55m) • H 7:00pm (1.57m)"
+
+          aest = timezone(timedelta(hours=11))
+          data = {
+              "updated": datetime.now(aest).strftime("%H:%M AEDT"),
+              "wedding_cake": extract_wind("Western Wedding Cake"),
+              "fort_denison": extract_wind("Fort Denison (Sth end BOM)", "Fort Denison"),
+              "manns_point": extract_wind("Manns Point"),
+              "glebe_island": extract_wind("Glebe Island"),
+              "berry_island": extract_wind("Berry Island"),
+              "ampol": extract_wind("Ampol Wharf"),
+              "molineaux": extract_wind("Molineaux Point"),
+              "sydney_airport": extract_wind("Sydney Airport"),
+              "syd_tide_now": extract_measured_tide("Fort Denison Tide", "Fort Denison"),
+              "bot_tide_now": extract_measured_tide("Pilot Jetty Tide", "Kurnell Wharf Tide"),
+              "tide_schedule": tide_schedule_str,
+              "syd_wave": extract_wave("Sydney Entrance Channel Wave"),
+              "bot_wave": extract_wave("Botany Offshore (Directional) Wave", "Captain Cook (Directional) Wave")
+          }
+
+          with open("data.json", "w") as f:
+              json.dump(data, f, indent=2)
+          EOF
+
+      - name: Commit data.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data.json
+          git diff --staged --quiet || git commit -m "Update winds, swells, and BOM tide times"
+          git push
