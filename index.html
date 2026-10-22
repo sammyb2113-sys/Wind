@@ -18,9 +18,9 @@
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       display: grid;
-      grid-template-rows: auto 1fr 1fr;
-      gap: 6px;
-      padding: 8px;
+      grid-template-rows: auto auto 1fr 1fr;
+      gap: 5px;
+      padding: 7px;
       background: #161b22;
       border: 1px solid #30363d;
       border-radius: 12px;
@@ -29,16 +29,31 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 4px;
+      padding-bottom: 3px;
       border-bottom: 1px solid #30363d;
     }
-    .header h1 { font-size: 13px; font-weight: 800; color: #58a6ff; }
-    .updated { font-size: 10px; color: #8b949e; font-weight: 600; }
+    .header h1 { font-size: 12.5px; font-weight: 800; color: #58a6ff; }
+    .updated { font-size: 9.5px; color: #8b949e; font-weight: 600; }
+
+    .tide-banner {
+      background: #1a2230;
+      border: 1px solid #388bfd44;
+      border-radius: 6px;
+      padding: 4px 7px;
+      font-size: 9.5px;
+      color: #c9d1d9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .tide-banner strong { color: #79c0ff; }
 
     .port-block {
       display: grid;
       grid-template-rows: auto 1fr 1fr auto;
-      gap: 5px;
+      gap: 4px;
       min-height: 0;
     }
     .port-header {
@@ -51,15 +66,15 @@
       text-transform: uppercase;
       color: #3fb950;
       font-weight: 800;
-      letter-spacing: 0.7px;
+      letter-spacing: 0.6px;
     }
     .tide-pill {
-      font-size: 10px;
+      font-size: 9.5px;
       background: #1f2a3c;
       color: #79c0ff;
       border: 1px solid #388bfd55;
       border-radius: 4px;
-      padding: 1px 6px;
+      padding: 1px 5px;
       font-weight: 700;
     }
 
@@ -73,14 +88,14 @@
       background: #21262d;
       border: 1px solid #30363d;
       border-radius: 7px;
-      padding: 5px 8px;
+      padding: 4px 7px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       min-height: 0;
     }
     .st-name {
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 700;
       color: #c9d1d9;
       white-space: nowrap;
@@ -88,14 +103,14 @@
       text-overflow: ellipsis;
     }
     .st-speed {
-      font-size: 19px;
+      font-size: 17.5px;
       font-weight: 900;
       color: #f0883e;
       line-height: 1.1;
       margin: 1px 0;
     }
     .st-meta {
-      font-size: 9.5px;
+      font-size: 9px;
       color: #8b949e;
       display: flex;
       justify-content: space-between;
@@ -106,11 +121,11 @@
       background: #121820;
       border: 1px solid #263140;
       border-radius: 6px;
-      padding: 4px 8px;
+      padding: 3.5px 7px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 10px;
+      font-size: 9.5px;
       color: #a5d6ff;
     }
     .wave-bar strong { color: #58a6ff; }
@@ -120,15 +135,20 @@
 
 <div class="widget">
   <div class="header">
-    <h1>⚓ PANSW Live Winds & Sea</h1>
+    <h1>⚓ PANSW Live Winds, Swell & Tides</h1>
     <span id="lastUpdated" class="updated">Syncing...</span>
   </div>
 
-  <!-- SYDNEY HARBOUR (4 Stations + Tide + Swell) -->
+  <!-- DAILY HIGH & LOW TIDE SCHEDULE -->
+  <div class="tide-banner">
+    <span>🌊 <strong>Tides:</strong> <span id="tide-schedule">Loading schedule...</span></span>
+  </div>
+
+  <!-- SYDNEY HARBOUR -->
   <div class="port-block">
     <div class="port-header">
       <span class="port-title">Sydney Harbour</span>
-      <span class="tide-pill">Tide: <span id="syd-tide">--</span></span>
+      <span class="tide-pill">Gauge: <span id="syd-tide">--</span></span>
     </div>
     <div class="row-2">
       <div class="card">
@@ -150,7 +170,7 @@
     </div>
     <div class="row-2">
       <div class="card">
-        <div class="st-name">Manns Pt / Berry</div>
+        <div class="st-name">Manns Point</div>
         <div class="st-speed" id="manns-speed">-- kts</div>
         <div class="st-meta">
           <span id="manns-gust">G: --</span>
@@ -167,16 +187,16 @@
       </div>
     </div>
     <div class="wave-bar">
-      <span>🌊 <strong>Offshore Swell:</strong> <span id="syd-swell">--</span></span>
+      <span>🌊 <strong>Heads Wave:</strong> <span id="syd-swell">--</span></span>
       <span id="syd-period">Tp: --</span>
     </div>
   </div>
 
-  <!-- BOTANY BAY (4 Stations + Tide + Swell) -->
+  <!-- BOTANY BAY -->
   <div class="port-block">
     <div class="port-header">
       <span class="port-title">Botany Bay</span>
-      <span class="tide-pill">Tide: <span id="bot-tide">--</span></span>
+      <span class="tide-pill">Pilot Jetty: <span id="bot-tide">--</span></span>
     </div>
     <div class="row-2">
       <div class="card">
@@ -206,16 +226,16 @@
         </div>
       </div>
       <div class="card">
-        <div class="st-name">Brotherson / Bot</div>
-        <div class="st-speed" id="brotherson-speed">-- kts</div>
+        <div class="st-name">Berry Island (Syd)</div>
+        <div class="st-speed" id="berry-speed">-- kts</div>
         <div class="st-meta">
-          <span id="brotherson-gust">G: --</span>
-          <span id="brotherson-dir">--</span>
+          <span id="berry-gust">G: --</span>
+          <span id="berry-dir">--</span>
         </div>
       </div>
     </div>
     <div class="wave-bar">
-      <span>🌊 <strong>Botany Waves:</strong> <span id="bot-swell">--</span></span>
+      <span>🌊 <strong>Botany Offshore:</strong> <span id="bot-swell">--</span></span>
       <span id="bot-period">Tp: --</span>
     </div>
   </div>
@@ -255,19 +275,32 @@ async function loadData() {
       setStation('ampol', d.ampol);
       setStation('molineaux', d.molineaux);
       setStation('airport', d.sydney_airport);
-      setStation('brotherson', d.brotherson || d.ampol);
+      setStation('berry', d.berry_island);
 
-      if (d.syd_tide) document.getElementById('syd-tide').textContent = d.syd_tide;
-      if (d.bot_tide) document.getElementById('bot-tide').textContent = d.bot_tide;
+      if (d.syd_tide_now && d.syd_tide_now !== '--') {
+        document.getElementById('syd-tide').textContent = d.syd_tide_now;
+      } else if (d.bot_tide_now) {
+        document.getElementById('syd-tide').textContent = d.bot_tide_now;
+      }
+
+      if (d.bot_tide_now) {
+        document.getElementById('bot-tide').textContent = d.bot_tide_now;
+      }
+
+      if (d.tide_schedule) {
+        document.getElementById('tide-schedule').textContent = d.tide_schedule;
+      }
 
       if (d.syd_wave) {
         const c = toCardinal(d.syd_wave.dir);
-        document.getElementById('syd-swell').textContent = `${d.syd_wave.hs} ${c}`;
+        const maxStr = (d.syd_wave.hmax && d.syd_wave.hmax !== '--') ? ` (Max ${d.syd_wave.hmax})` : '';
+        document.getElementById('syd-swell').textContent = `${d.syd_wave.hs}${maxStr} ${c}`;
         document.getElementById('syd-period').textContent = `Tp: ${d.syd_wave.tp}`;
       }
       if (d.bot_wave) {
         const c = toCardinal(d.bot_wave.dir);
-        document.getElementById('bot-swell').textContent = `${d.bot_wave.hs} ${c}`;
+        const maxStr = (d.bot_wave.hmax && d.bot_wave.hmax !== '--') ? ` (Max ${d.bot_wave.hmax})` : '';
+        document.getElementById('bot-swell').textContent = `${d.bot_wave.hs}${maxStr} ${c}`;
         document.getElementById('bot-period').textContent = `Tp: ${d.bot_wave.tp}`;
       }
 
