@@ -2,49 +2,71 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NSW Ports Live Wind</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>NSW Ports Marine Telemetry</title>
   <style>
-    * { box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%;
       background: #0d1117;
       color: #e6edf3;
-      margin: 0;
-      padding: 8px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow: hidden;
     }
     .widget-container {
-      width: 100%;
-      max-width: 460px;
-      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100vh;
+      padding: 10px 10px;
       background: #161b22;
       border: 1px solid #30363d;
-      border-radius: 12px;
-      padding: 12px;
+      border-radius: 14px;
     }
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding-bottom: 6px;
       border-bottom: 1px solid #30363d;
-      padding-bottom: 8px;
-      margin-bottom: 10px;
     }
-    .header h1 { font-size: 15px; margin: 0; font-weight: 700; color: #58a6ff; }
-    .updated { font-size: 11px; color: #8b949e; }
-    .port-section { margin-bottom: 10px; }
+    .header h1 { font-size: 13.5px; font-weight: 700; color: #58a6ff; }
+    .updated { font-size: 10.5px; color: #8b949e; }
+    
+    .port-section {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+      justify-content: center;
+      padding: 4px 0;
+    }
+    .port-title-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
     .port-title {
-      font-size: 11px;
+      font-size: 10.5px;
       text-transform: uppercase;
       color: #3fb950;
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: 0.8px;
-      margin-bottom: 6px;
     }
+    .tide-tag {
+      font-size: 10px;
+      background: #1f2a3c;
+      color: #79c0ff;
+      border: 1px solid #388bfd40;
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-weight: 600;
+    }
+
     .grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      gap: 6px;
     }
     .station-card {
       background: #21262d;
@@ -52,21 +74,52 @@
       border-radius: 8px;
       padding: 8px 10px;
     }
-    .station-name { font-size: 12px; font-weight: 600; color: #f0f6fc; margin-bottom: 4px; }
-    .wind-speed { font-size: 19px; font-weight: 800; color: #f0883e; }
-    .wind-details { font-size: 11px; color: #8b949e; margin-top: 2px; }
+    .station-name {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #c9d1d9;
+      margin-bottom: 2px;
+    }
+    .wind-speed {
+      font-size: 21px;
+      font-weight: 800;
+      color: #f0883e;
+      line-height: 1.1;
+    }
+    .wind-details {
+      font-size: 10.5px;
+      color: #8b949e;
+      margin-top: 2px;
+    }
+
+    .sea-strip {
+      background: #121820;
+      border: 1px dashed #30363d;
+      border-radius: 6px;
+      padding: 5px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10.5px;
+      color: #a5d6ff;
+    }
+    .sea-strip strong { color: #58a6ff; }
   </style>
 </head>
 <body>
 
 <div class="widget-container">
   <div class="header">
-    <h1>⚓ PANSW Live Winds</h1>
-    <span id="lastUpdated" class="updated">Loading...</span>
+    <h1>⚓ PANSW Telemetry</h1>
+    <span id="lastUpdated" class="updated">Syncing...</span>
   </div>
 
+  <!-- Sydney Harbour -->
   <div class="port-section">
-    <div class="port-title">Sydney Harbour</div>
+    <div class="port-title-bar">
+      <span class="port-title">Sydney Harbour</span>
+      <span class="tide-tag">Tide: <span id="syd-tide">--</span></span>
+    </div>
     <div class="grid">
       <div class="station-card">
         <div class="station-name">W Wedding Cake</div>
@@ -81,10 +134,18 @@
         <div class="wind-details" id="denison-dir">Dir: --</div>
       </div>
     </div>
+    <div class="sea-strip">
+      <span>🌊 <strong>Offshore Swell:</strong> <span id="syd-swell">--</span></span>
+      <span id="syd-period">Tp: --</span>
+    </div>
   </div>
 
-  <div class="port-section" style="margin-bottom: 0;">
-    <div class="port-title">Botany Bay</div>
+  <!-- Botany Bay -->
+  <div class="port-section">
+    <div class="port-title-bar">
+      <span class="port-title">Botany Bay</span>
+      <span class="tide-tag">Tide: <span id="bot-tide">--</span></span>
+    </div>
     <div class="grid">
       <div class="station-card">
         <div class="station-name">Ampol Wharf</div>
@@ -98,6 +159,10 @@
         <div class="wind-details" id="molineaux-gust">Gust: --</div>
         <div class="wind-details" id="molineaux-dir">Dir: --</div>
       </div>
+    </div>
+    <div class="sea-strip">
+      <span>🌊 <strong>Bay Waves:</strong> <span id="bot-swell">--</span></span>
+      <span id="bot-period">Tp: --</span>
     </div>
   </div>
 </div>
@@ -117,60 +182,38 @@ function renderStation(prefix, obj) {
   document.getElementById(`${prefix}-dir`).textContent = `Dir: ${toCardinal(obj.dir)}(${obj.dir}°)`;
 }
 
-function parseTextBlock(text, label) {
-  const idx = text.indexOf(label);
-  if (idx === -1) return null;
-  const sub = text.substring(idx, idx + 450);
-  const spd = sub.match(/Mean Speed:\s*([\d\.]+)\s*knots/i);
-  const gst = sub.match(/Gust:\s*([\d\.]+)\s*knots/i);
-  const dir = sub.match(/Dir:\s*([\d\.]+)\s*deg/i);
-  return {
-    speed: spd ? spd[1] : '--',
-    gust: gst ? gst[1] : '--',
-    dir: dir ? dir[1] : '--'
-  };
-}
-
-async function loadWinds() {
+async function loadData() {
   const statusEl = document.getElementById('lastUpdated');
-  
-  // 1. Primary: Read pre-scraped data.json from same GitHub repo (zero CORS issues)
   try {
     const res = await fetch(`./data.json?t=${Date.now()}`, { cache: 'no-store' });
     if (res.ok) {
-      const data = await res.json();
-      renderStation('cake', data.wedding_cake);
-      renderStation('denison', data.fort_denison);
-      renderStation('ampol', data.ampol);
-      renderStation('molineaux', data.molineaux);
-      statusEl.textContent = data.updated || 'Live';
-      return;
-    }
-  } catch (e) {}
+      const d = await res.json();
+      renderStation('cake', d.wedding_cake);
+      renderStation('denison', d.fort_denison);
+      renderStation('ampol', d.ampol);
+      renderStation('molineaux', d.molineaux);
 
-  // 2. Fallback: Jina Reader bridge (CORS-enabled text extractor for Port Authority NSW)
-  try {
-    const res = await fetch('https://r.jina.ai/https://wavewindtide.portauthoritynsw.com.au/', {
-      headers: { 'Accept': 'text/plain' },
-      cache: 'no-store'
-    });
-    if (res.ok) {
-      const text = await res.text();
-      renderStation('cake', parseTextBlock(text, 'Western Wedding Cake'));
-      renderStation('denison', parseTextBlock(text, 'Fort Denison'));
-      renderStation('ampol', parseTextBlock(text, 'Ampol Wharf'));
-      renderStation('molineaux', parseTextBlock(text, 'Molineaux Point'));
-      const now = new Date();
-      statusEl.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      return;
-    }
-  } catch (e) {}
+      if (d.syd_tide) document.getElementById('syd-tide').textContent = d.syd_tide;
+      if (d.bot_tide) document.getElementById('bot-tide').textContent = d.bot_tide;
 
-  statusEl.textContent = "Offline";
+      if (d.syd_wave) {
+        document.getElementById('syd-swell').textContent = `${d.syd_wave.hs} ${toCardinal(d.syd_wave.dir)}`;
+        document.getElementById('syd-period').textContent = `Tp: ${d.syd_wave.tp}`;
+      }
+      if (d.bot_wave) {
+        document.getElementById('bot-swell').textContent = `${d.bot_wave.hs} ${toCardinal(d.bot_wave.dir)}`;
+        document.getElementById('bot-period').textContent = `Tp: ${d.bot_wave.tp}`;
+      }
+
+      statusEl.textContent = d.updated || 'Live';
+    }
+  } catch (e) {
+    statusEl.textContent = 'Updating...';
+  }
 }
 
-loadWinds();
-setInterval(loadWinds, 180000);
+loadData();
+setInterval(loadData, 180000);
 </script>
 </body>
 </html>
