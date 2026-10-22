@@ -3,22 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>NSW Ports Marine Telemetry</title>
+  <title>NSW Ports Telemetry</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
+      width: 100%;
       height: 100%;
-      background: #0d1117;
+      background-color: #0d1117;
       color: #e6edf3;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       overflow: hidden;
     }
-    .widget-container {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      height: 100vh;
-      padding: 8px 10px;
+    .widget {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      display: grid;
+      grid-template-rows: auto 1fr 1fr;
+      gap: 6px;
+      padding: 8px;
       background: #161b22;
       border: 1px solid #30363d;
       border-radius: 12px;
@@ -27,21 +29,19 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 5px;
+      padding-bottom: 4px;
       border-bottom: 1px solid #30363d;
     }
-    .header h1 { font-size: 13px; font-weight: 700; color: #58a6ff; }
-    .updated { font-size: 10px; color: #8b949e; }
+    .header h1 { font-size: 13px; font-weight: 800; color: #58a6ff; }
+    .updated { font-size: 10px; color: #8b949e; font-weight: 600; }
 
-    .port-section {
-      display: flex;
-      flex-direction: column;
+    .port-block {
+      display: grid;
+      grid-template-rows: auto 1fr 1fr auto;
       gap: 5px;
-      flex: 1;
-      justify-content: space-evenly;
-      padding: 3px 0;
+      min-height: 0;
     }
-    .port-title-bar {
+    .port-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -51,144 +51,171 @@
       text-transform: uppercase;
       color: #3fb950;
       font-weight: 800;
-      letter-spacing: 0.8px;
+      letter-spacing: 0.7px;
     }
-    .tide-tag {
-      font-size: 9.5px;
+    .tide-pill {
+      font-size: 10px;
       background: #1f2a3c;
       color: #79c0ff;
-      border: 1px solid #388bfd40;
+      border: 1px solid #388bfd55;
       border-radius: 4px;
-      padding: 1px 5px;
-      font-weight: 600;
+      padding: 1px 6px;
+      font-weight: 700;
     }
 
-    .grid-2 {
+    .row-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 5px;
+      min-height: 0;
     }
-    .station-card {
+    .card {
       background: #21262d;
       border: 1px solid #30363d;
       border-radius: 7px;
-      padding: 6px 8px;
+      padding: 5px 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 0;
     }
-    .station-name {
+    .st-name {
       font-size: 11px;
-      font-weight: 600;
+      font-weight: 700;
       color: #c9d1d9;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .wind-speed {
-      font-size: 18px;
-      font-weight: 800;
+    .st-speed {
+      font-size: 19px;
+      font-weight: 900;
       color: #f0883e;
       line-height: 1.1;
-      margin: 2px 0 1px 0;
+      margin: 1px 0;
     }
-    .wind-details {
+    .st-meta {
       font-size: 9.5px;
       color: #8b949e;
-      line-height: 1.2;
+      display: flex;
+      justify-content: space-between;
+      white-space: nowrap;
     }
 
-    .sea-strip {
+    .wave-bar {
       background: #121820;
-      border: 1px dashed #30363d;
+      border: 1px solid #263140;
       border-radius: 6px;
-      padding: 4px 7px;
+      padding: 4px 8px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-size: 10px;
       color: #a5d6ff;
     }
-    .sea-strip strong { color: #58a6ff; }
+    .wave-bar strong { color: #58a6ff; }
   </style>
 </head>
 <body>
 
-<div class="widget-container">
+<div class="widget">
   <div class="header">
-    <h1>⚓ PANSW Telemetry</h1>
+    <h1>⚓ PANSW Live Winds & Sea</h1>
     <span id="lastUpdated" class="updated">Syncing...</span>
   </div>
 
-  <!-- Sydney Harbour: 4 Stations + Tide + Offshore Swell -->
-  <div class="port-section">
-    <div class="port-title-bar">
+  <!-- SYDNEY HARBOUR (4 Stations + Tide + Swell) -->
+  <div class="port-block">
+    <div class="port-header">
       <span class="port-title">Sydney Harbour</span>
-      <span class="tide-tag">Tide: <span id="syd-tide">--</span></span>
+      <span class="tide-pill">Tide: <span id="syd-tide">--</span></span>
     </div>
-    <div class="grid-2">
-      <div class="station-card">
-        <div class="station-name">W Wedding Cake</div>
-        <div class="wind-speed" id="cake-speed">-- kts</div>
-        <div class="wind-details" id="cake-gust">Gust: --</div>
-        <div class="wind-details" id="cake-dir">Dir: --</div>
+    <div class="row-2">
+      <div class="card">
+        <div class="st-name">W Wedding Cake</div>
+        <div class="st-speed" id="cake-speed">-- kts</div>
+        <div class="st-meta">
+          <span id="cake-gust">G: --</span>
+          <span id="cake-dir">--</span>
+        </div>
       </div>
-      <div class="station-card">
-        <div class="station-name">Fort Denison</div>
-        <div class="wind-speed" id="denison-speed">-- kts</div>
-        <div class="wind-details" id="denison-gust">Gust: --</div>
-        <div class="wind-details" id="denison-dir">Dir: --</div>
-      </div>
-      <div class="station-card">
-        <div class="station-name">Manns Pt / Berry</div>
-        <div class="wind-speed" id="manns-speed">-- kts</div>
-        <div class="wind-details" id="manns-gust">Gust: --</div>
-        <div class="wind-details" id="manns-dir">Dir: --</div>
-      </div>
-      <div class="station-card">
-        <div class="station-name">Glebe Island</div>
-        <div class="wind-speed" id="glebe-speed">-- kts</div>
-        <div class="wind-details" id="glebe-gust">Gust: --</div>
-        <div class="wind-details" id="glebe-dir">Dir: --</div>
+      <div class="card">
+        <div class="st-name">Fort Denison</div>
+        <div class="st-speed" id="denison-speed">-- kts</div>
+        <div class="st-meta">
+          <span id="denison-gust">G: --</span>
+          <span id="denison-dir">--</span>
+        </div>
       </div>
     </div>
-    <div class="sea-strip">
+    <div class="row-2">
+      <div class="card">
+        <div class="st-name">Manns Pt / Berry</div>
+        <div class="st-speed" id="manns-speed">-- kts</div>
+        <div class="st-meta">
+          <span id="manns-gust">G: --</span>
+          <span id="manns-dir">--</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="st-name">Glebe Island</div>
+        <div class="st-speed" id="glebe-speed">-- kts</div>
+        <div class="st-meta">
+          <span id="glebe-gust">G: --</span>
+          <span id="glebe-dir">--</span>
+        </div>
+      </div>
+    </div>
+    <div class="wave-bar">
       <span>🌊 <strong>Offshore Swell:</strong> <span id="syd-swell">--</span></span>
       <span id="syd-period">Tp: --</span>
     </div>
   </div>
 
-  <!-- Botany Bay: 3 Stations + Tide + Bay Waves -->
-  <div class="port-section">
-    <div class="port-title-bar">
+  <!-- BOTANY BAY (4 Stations + Tide + Swell) -->
+  <div class="port-block">
+    <div class="port-header">
       <span class="port-title">Botany Bay</span>
-      <span class="tide-tag">Tide: <span id="bot-tide">--</span></span>
+      <span class="tide-pill">Tide: <span id="bot-tide">--</span></span>
     </div>
-    <div class="grid-2">
-      <div class="station-card">
-        <div class="station-name">Ampol Wharf</div>
-        <div class="wind-speed" id="ampol-speed">-- kts</div>
-        <div class="wind-details" id="ampol-gust">Gust: --</div>
-        <div class="wind-details" id="ampol-dir">Dir: --</div>
+    <div class="row-2">
+      <div class="card">
+        <div class="st-name">Ampol Wharf</div>
+        <div class="st-speed" id="ampol-speed">-- kts</div>
+        <div class="st-meta">
+          <span id="ampol-gust">G: --</span>
+          <span id="ampol-dir">--</span>
+        </div>
       </div>
-      <div class="station-card">
-        <div class="station-name">Molineaux Point</div>
-        <div class="wind-speed" id="molineaux-speed">-- kts</div>
-        <div class="wind-details" id="molineaux-gust">Gust: --</div>
-        <div class="wind-details" id="molineaux-dir">Dir: --</div>
-      </div>
-      <div class="station-card" style="grid-column: span 2;">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <div>
-            <div class="station-name">Airport / Runway (BOM)</div>
-            <div class="wind-details" id="airport-dir">Dir: --</div>
-          </div>
-          <div style="text-align: right;">
-            <div class="wind-speed" id="airport-speed" style="margin: 0;">-- kts</div>
-            <div class="wind-details" id="airport-gust">Gust: --</div>
-          </div>
+      <div class="card">
+        <div class="st-name">Molineaux Point</div>
+        <div class="st-speed" id="molineaux-speed">-- kts</div>
+        <div class="st-meta">
+          <span id="molineaux-gust">G: --</span>
+          <span id="molineaux-dir">--</span>
         </div>
       </div>
     </div>
-    <div class="sea-strip">
-      <span>🌊 <strong>Bay Waves:</strong> <span id="bot-swell">--</span></span>
+    <div class="row-2">
+      <div class="card">
+        <div class="st-name">Airport Runway</div>
+        <div class="st-speed" id="airport-speed">-- kts</div>
+        <div class="st-meta">
+          <span id="airport-gust">G: --</span>
+          <span id="airport-dir">--</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="st-name">Brotherson / Bot</div>
+        <div class="st-speed" id="brotherson-speed">-- kts</div>
+        <div class="st-meta">
+          <span id="brotherson-gust">G: --</span>
+          <span id="brotherson-dir">--</span>
+        </div>
+      </div>
+    </div>
+    <div class="wave-bar">
+      <span>🌊 <strong>Botany Waves:</strong> <span id="bot-swell">--</span></span>
       <span id="bot-period">Tp: --</span>
     </div>
   </div>
@@ -199,17 +226,20 @@ function toCardinal(deg) {
   const n = parseFloat(deg);
   if (isNaN(n)) return '';
   const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
-  return dirs[Math.round(n / 22.5) % 16] + ' ';
+  return dirs[Math.round(n / 22.5) % 16];
 }
 
-function renderStation(prefix, obj) {
+function setStation(prefix, obj) {
   if (!obj) return;
-  const spdEl = document.getElementById(`${prefix}-speed`);
-  const gstEl = document.getElementById(`${prefix}-gust`);
-  const dirEl = document.getElementById(`${prefix}-dir`);
-  if (spdEl) spdEl.textContent = `${obj.speed} kts`;
-  if (gstEl) gstEl.textContent = `Gust: ${obj.gust} kts`;
-  if (dirEl) dirEl.textContent = `Dir: ${toCardinal(obj.dir)}(${obj.dir}°)`;
+  const s = document.getElementById(`${prefix}-speed`);
+  const g = document.getElementById(`${prefix}-gust`);
+  const d = document.getElementById(`${prefix}-dir`);
+  if (s) s.textContent = `${obj.speed} kts`;
+  if (g) g.textContent = `G: ${obj.gust}`;
+  if (d) {
+    const card = toCardinal(obj.dir);
+    d.textContent = card ? `${card} (${obj.dir}°)` : `${obj.dir}°`;
+  }
 }
 
 async function loadData() {
@@ -218,30 +248,33 @@ async function loadData() {
     const res = await fetch(`./data.json?t=${Date.now()}`, { cache: 'no-store' });
     if (res.ok) {
       const d = await res.json();
-      renderStation('cake', d.wedding_cake);
-      renderStation('denison', d.fort_denison);
-      renderStation('manns', d.manns_point);
-      renderStation('glebe', d.glebe_island);
-      renderStation('ampol', d.ampol);
-      renderStation('molineaux', d.molineaux);
-      renderStation('airport', d.sydney_airport);
+      setStation('cake', d.wedding_cake);
+      setStation('denison', d.fort_denison);
+      setStation('manns', d.manns_point);
+      setStation('glebe', d.glebe_island);
+      setStation('ampol', d.ampol);
+      setStation('molineaux', d.molineaux);
+      setStation('airport', d.sydney_airport);
+      setStation('brotherson', d.brotherson || d.ampol);
 
       if (d.syd_tide) document.getElementById('syd-tide').textContent = d.syd_tide;
       if (d.bot_tide) document.getElementById('bot-tide').textContent = d.bot_tide;
 
       if (d.syd_wave) {
-        document.getElementById('syd-swell').textContent = `${d.syd_wave.hs} ${toCardinal(d.syd_wave.dir)}`;
+        const c = toCardinal(d.syd_wave.dir);
+        document.getElementById('syd-swell').textContent = `${d.syd_wave.hs} ${c}`;
         document.getElementById('syd-period').textContent = `Tp: ${d.syd_wave.tp}`;
       }
       if (d.bot_wave) {
-        document.getElementById('bot-swell').textContent = `${d.bot_wave.hs} ${toCardinal(d.bot_wave.dir)}`;
+        const c = toCardinal(d.bot_wave.dir);
+        document.getElementById('bot-swell').textContent = `${d.bot_wave.hs} ${c}`;
         document.getElementById('bot-period').textContent = `Tp: ${d.bot_wave.tp}`;
       }
 
       statusEl.textContent = d.updated || 'Live';
     }
   } catch (e) {
-    statusEl.textContent = 'Updating...';
+    statusEl.textContent = 'Syncing...';
   }
 }
 
