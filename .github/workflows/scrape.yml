@@ -70,8 +70,11 @@ jobs:
               "updated": datetime.now(aest).strftime("%H:%M AEDT"),
               "wedding_cake": extract_wind("Western Wedding Cake"),
               "fort_denison": extract_wind("Fort Denison"),
+              "manns_point": extract_wind("Manns Point") or extract_wind("Berry Island"),
+              "glebe_island": extract_wind("Glebe Island"),
               "ampol": extract_wind("Ampol Wharf"),
               "molineaux": extract_wind("Molineaux Point"),
+              "sydney_airport": extract_wind("Sydney Airport") or extract_wind("Runway"),
               "syd_tide": extract_tide("Fort Denison"),
               "bot_tide": extract_tide("Molineaux Point") or extract_tide("Botany"),
               "syd_wave": extract_wave("Sydney Offshore") or extract_wave("Sydney Wave"),
@@ -87,5 +90,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data.json
-          git diff --staged --quiet || git commit -m "Auto-update Port Authority marine data"
+          git diff --staged --quiet || git commit -m "Update marine observations"
           git push
