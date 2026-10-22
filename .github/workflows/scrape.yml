@@ -2,8 +2,8 @@ name: Scrape NSW Port Winds
 
 on:
   schedule:
-    - cron: '*/5 * * * *' # Runs automatically every 5 minutes
-  workflow_dispatch:      # Allows manual trigger
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -24,36 +24,58 @@ jobs:
           from datetime import datetime, timezone, timedelta
 
           url = "https://wavewindtide.portauthoritynsw.com.au/"
-          req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-          html = urllib.request.urlopen(req, timeout=20).read().decode('utf-8', errors='ignore')
+          req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'})
+          html = urllib.request.urlopen(req, timeout=25).read().decode('utf-8', errors='ignore')
           clean = re.sub(r'<[^>]+>', ' ', html)
           clean = re.sub(r'\s+', ' ', clean)
 
-          def extract(station_label):
+          def extract_wind(station_label):
               idx = clean.find(station_label)
               if idx == -1:
-                  return {"speed": "--", "gust": "--", "dir": "--", "time": "--"}
+                  return {"speed": "--", "gust": "--", "dir": "--"}
               snippet = clean[idx:idx+450]
-              spd = re.search(r'10 Min Mean Speed:\s*([\d\.]+)\s*knots', snippet, re.I)
-              if not spd:
-                  spd = re.search(r'Mean Speed:\s*([\d\.]+)\s*knots', snippet, re.I)
+              spd = re.search(r'(?:10 Min Mean Speed|Mean Speed):\s*([\d\.]+)\s*knots', snippet, re.I)
               gust = re.search(r'Gust:\s*([\d\.]+)\s*knots', snippet, re.I)
               d = re.search(r'Dir:\s*([\d\.]+)\s*deg', snippet, re.I)
-              t = re.search(r'at\s*(\d{4},\s*\d{1,2}\s*[A-Za-z]{3}\s*\d{4})', snippet, re.I)
               return {
                   "speed": spd.group(1) if spd else "--",
                   "gust": gust.group(1) if gust else "--",
-                  "dir": d.group(1) if d else "--",
-                  "time": t.group(1) if t else "--"
+                  "dir": d.group(1) if d else "--"
               }
+
+          def extract_wave(wave_label):
+              idx = clean.find(wave_label)
+              if idx == -1:
+                  return {"hs": "--", "tp": "--", "dir": "--"}
+              snippet = clean[idx:idx+450]
+              hs = re.search(r'(?:Sig(?:nificant)? Wave Ht|Hs):\s*([\d\.]+)\s*m', snippet, re.I)
+              tp = re.search(r'(?:Peak Period|Tp):\s*([\d\.]+)\s*s', snippet, re.I)
+              d = re.search(r'Dir:\s*([\d\.]+)\s*deg', snippet, re.I)
+              return {
+                  "hs": f"{hs.group(1)}m" if hs else "--",
+                  "tp": f"{tp.group(1)}s" if tp else "--",
+                  "dir": d.group(1) if d else "--"
+              }
+
+          def extract_tide(tide_label):
+              idx = clean.find(tide_label)
+              if idx == -1:
+                  return "--"
+              snippet = clean[idx:idx+350]
+              t = re.search(r'(?:Water Level|Tide|Height):\s*([-\d\.]+)\s*m', snippet, re.I)
+              return f"{t.group(1)}m" if t else "--"
 
           aest = timezone(timedelta(hours=11))
           data = {
               "updated": datetime.now(aest).strftime("%H:%M AEDT"),
-              "wedding_cake": extract("Western Wedding Cake"),
-              "fort_denison": extract("Fort Denison"),
-              "ampol": extract("Ampol Wharf"),
-              "molineaux": extract("Molineaux Point")
+              "wedding_cake": extract_wind("Western Wedding Cake"),
+              "fort_denison": extract_wind("Fort Denison"),
+              "ampol": extract_wind("Ampol Wharf"),
+              "molineaux": extract_wind("Molineaux Point"),
+              "syd_tide": extract_tide("Fort Denison"),
+              "bot_tide": extract_tide("Molineaux Point") or extract_tide("Botany"),
+              "syd_wave": extract_wave("Sydney Offshore") or extract_wave("Sydney Wave"),
+              "bot_wave": extract_wave("Botany") or extract_wave("Kurnell")
           }
 
           with open("data.json", "w") as f:
@@ -65,5 +87,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data.json
-          git diff --staged --quiet || git commit -m "Auto-update Port Authority wind data"
+          git diff --staged --quiet || git commit -m "Auto-update Port Authority marine data"
           git push
