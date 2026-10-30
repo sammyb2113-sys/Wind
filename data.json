@@ -1,58 +1,58 @@
 {
-  "updated": "23:24 AEDT",
+  "updated": "00:32 AEDT",
   "wedding_cake": {
-    "speed": "20.3",
-    "gust": "23.0",
-    "dir": "26"
-  },
-  "fort_denison": {
-    "speed": "10.1",
-    "gust": "15.5",
-    "dir": "32"
-  },
-  "manns_point": {
-    "speed": "6.1",
-    "gust": "13.8",
-    "dir": "4"
-  },
-  "glebe_island": {
-    "speed": "9.6",
-    "gust": "16.3",
-    "dir": "31"
-  },
-  "berry_island": {
-    "speed": "2.4",
-    "gust": "9.0",
-    "dir": "348"
-  },
-  "ampol": {
-    "speed": "15.4",
-    "gust": "19.0",
-    "dir": "38"
-  },
-  "molineaux": {
-    "speed": "14.0",
-    "gust": "21.1",
-    "dir": "28"
-  },
-  "sydney_airport": {
-    "speed": "13.7",
-    "gust": "17.6",
+    "speed": "17.0",
+    "gust": "20.7",
     "dir": "22"
   },
+  "fort_denison": {
+    "speed": "4.1",
+    "gust": "7.0",
+    "dir": "38"
+  },
+  "manns_point": {
+    "speed": "1.9",
+    "gust": "3.9",
+    "dir": "345"
+  },
+  "glebe_island": {
+    "speed": "3.5",
+    "gust": "5.4",
+    "dir": "12"
+  },
+  "berry_island": {
+    "speed": "0.6",
+    "gust": "2.4",
+    "dir": "344"
+  },
+  "ampol": {
+    "speed": "16.1",
+    "gust": "20.0",
+    "dir": "33"
+  },
+  "molineaux": {
+    "speed": "11.6",
+    "gust": "16.8",
+    "dir": "19"
+  },
+  "sydney_airport": {
+    "speed": "9.3",
+    "gust": "13.0",
+    "dir": "20"
+  },
   "syd_tide_now": "--",
-  "bot_tide_now": "1.23m",
-  "tide_schedule": "L 5:24am (0.53m) \u2022 H 11:58am (1.89m) \u2022 L 6:50pm (0.33m) \u2022 H 12:53am (1.28m)",
+  "bot_tide_now": "1.36m",
+  "tide_schedule": "H 12:53am (1.28m) \u2022 L 6:22am (0.60m) \u2022 H 12:56pm (1.81m) \u2022 L 7:57pm (0.38m)",
   "syd_wave": {
-    "hs": "0.73m",
-    "hmax": "1.13m",
-    "tp": "14.73s",
-    "dir": "77"
+    "hs": "0.74m",
+    "hmax": "1.29m",
+    "tp": "14.42s",
+    "dir": "78"
   },
   "bot_wave": {
-    "hs": "2.03m",
-    "hmax": "3.07m",
-    "tp": "14.48s",
-    "dir": "158"
+    "hs": "2.21m",
+    "hmax": "4.05m",
+    "tp": "14.51s",
+    "dir": "159"
   }
 }
