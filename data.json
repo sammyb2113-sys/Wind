@@ -1,58 +1,58 @@
 {
-  "updated": "15:36 AEDT",
+  "updated": "16:38 AEDT",
   "wedding_cake": {
-    "speed": "15.9",
-    "gust": "20.0",
-    "dir": "57"
+    "speed": "17.5",
+    "gust": "20.7",
+    "dir": "51"
   },
   "fort_denison": {
-    "speed": "12.6",
-    "gust": "19.3",
-    "dir": "64"
-  },
-  "manns_point": {
-    "speed": "13.9",
-    "gust": "20.6",
-    "dir": "60"
-  },
-  "glebe_island": {
-    "speed": "19.6",
-    "gust": "23.5",
-    "dir": "66"
-  },
-  "berry_island": {
-    "speed": "4.3",
-    "gust": "10.6",
-    "dir": "337"
-  },
-  "ampol": {
-    "speed": "17.5",
-    "gust": "21.0",
-    "dir": "75"
-  },
-  "molineaux": {
-    "speed": "14.2",
-    "gust": "23.1",
-    "dir": "55"
-  },
-  "sydney_airport": {
-    "speed": "16.8",
-    "gust": "21.0",
-    "dir": "49"
-  },
-  "syd_tide_now": "--",
-  "bot_tide_now": "0.96m",
-  "tide_schedule": "L 12:38am (0.41m) \u2022 H 6:58am (1.59m) \u2022 L 1:11pm (0.49m) \u2022 H 7:10pm (1.51m)",
-  "syd_wave": {
-    "hs": "0.36m",
-    "hmax": "0.73m",
-    "tp": "9.81s",
+    "speed": "11.6",
+    "gust": "16.3",
     "dir": "76"
   },
+  "manns_point": {
+    "speed": "14.1",
+    "gust": "20.2",
+    "dir": "52"
+  },
+  "glebe_island": {
+    "speed": "19.2",
+    "gust": "23.6",
+    "dir": "57"
+  },
+  "berry_island": {
+    "speed": "3.2",
+    "gust": "9.7",
+    "dir": "324"
+  },
+  "ampol": {
+    "speed": "18.9",
+    "gust": "22.0",
+    "dir": "81"
+  },
+  "molineaux": {
+    "speed": "13.5",
+    "gust": "21.8",
+    "dir": "57"
+  },
+  "sydney_airport": {
+    "speed": "17.4",
+    "gust": "21.3",
+    "dir": "57"
+  },
+  "syd_tide_now": "--",
+  "bot_tide_now": "1.23m",
+  "tide_schedule": "L 12:38am (0.41m) \u2022 H 6:58am (1.59m) \u2022 L 1:11pm (0.49m) \u2022 H 7:10pm (1.51m)",
+  "syd_wave": {
+    "hs": "0.38m",
+    "hmax": "0.66m",
+    "tp": "10.22s",
+    "dir": "72"
+  },
   "bot_wave": {
-    "hs": "1.53m",
-    "hmax": "2.34m",
-    "tp": "9.41s",
-    "dir": "164"
+    "hs": "1.35m",
+    "hmax": "2.36m",
+    "tp": "9.66s",
+    "dir": "168"
   }
 }
