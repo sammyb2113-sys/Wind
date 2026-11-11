@@ -1,58 +1,58 @@
 {
-  "updated": "19:47 AEDT",
+  "updated": "20:43 AEDT",
   "wedding_cake": {
-    "speed": "10.7",
-    "gust": "13.0",
-    "dir": "79"
+    "speed": "8.0",
+    "gust": "9.7",
+    "dir": "117"
   },
   "fort_denison": {
-    "speed": "9.8",
-    "gust": "12.0",
-    "dir": "92"
+    "speed": "7.4",
+    "gust": "9.0",
+    "dir": "122"
   },
   "manns_point": {
-    "speed": "6.2",
-    "gust": "10.5",
-    "dir": "112"
+    "speed": "4.5",
+    "gust": "8.5",
+    "dir": "116"
   },
   "glebe_island": {
-    "speed": "7.4",
-    "gust": "11.8",
-    "dir": "78"
+    "speed": "2.9",
+    "gust": "7.3",
+    "dir": "149"
   },
   "berry_island": {
-    "speed": "0.9",
-    "gust": "4.8",
-    "dir": "101"
+    "speed": "0.5",
+    "gust": "4.4",
+    "dir": "126"
   },
   "ampol": {
     "speed": "7.9",
-    "gust": "10.0",
-    "dir": "95"
+    "gust": "9.0",
+    "dir": "141"
   },
   "molineaux": {
-    "speed": "6.3",
-    "gust": "8.6",
-    "dir": "83"
+    "speed": "7.2",
+    "gust": "9.0",
+    "dir": "139"
   },
   "sydney_airport": {
-    "speed": "9.0",
+    "speed": "8.3",
     "gust": "10.0",
-    "dir": "89"
+    "dir": "137"
   },
   "syd_tide_now": "--",
-  "bot_tide_now": "0.78m",
+  "bot_tide_now": "0.99m",
   "tide_schedule": "L 3:28am (0.56m) \u2022 H 10:03am (1.78m) \u2022 L 4:45pm (0.42m) \u2022 H 10:38pm (1.29m)",
   "syd_wave": {
-    "hs": "0.38m",
-    "hmax": "0.63m",
-    "tp": "9.57s",
-    "dir": "77"
+    "hs": "0.39m",
+    "hmax": "0.76m",
+    "tp": "10.16s",
+    "dir": "73"
   },
   "bot_wave": {
-    "hs": "1.12m",
-    "hmax": "1.67m",
-    "tp": "10.04s",
+    "hs": "1.17m",
+    "hmax": "1.88m",
+    "tp": "9.35s",
     "dir": "157"
   }
 }
